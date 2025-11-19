@@ -26,7 +26,8 @@ class NoteListFragment : Fragment() {
         val app = requireActivity().application as NotesJournalApp
         NoteViewModel.Factory(app.repository)
     }
-    private lateinit var adapter: NoteAdapter
+    private var adapter: NoteAdapter? = null
+    private var recyclerView: RecyclerView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +46,7 @@ class NoteListFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewNotes)
+        recyclerView = view.findViewById(R.id.recyclerViewNotes)
 
         adapter = NoteAdapter(
             onNoteClick = { note ->
@@ -59,8 +60,8 @@ class NoteListFragment : Fragment() {
             }
         )
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView?.adapter = adapter
     }
 
     private fun setupFab(view: View) {
@@ -76,7 +77,7 @@ class NoteListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.allNotes.collect { notes ->
-                    adapter.submitList(notes)
+                    adapter?.submitList(notes)
                     emptyView.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
                 }
             }
@@ -92,5 +93,13 @@ class NoteListFragment : Fragment() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clear view references to prevent memory leaks
+        recyclerView?.adapter = null
+        recyclerView = null
+        adapter = null
     }
 }

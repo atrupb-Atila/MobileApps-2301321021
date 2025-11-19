@@ -43,11 +43,11 @@ class NoteEditFragment : Fragment() {
     }
     private val args: NoteEditFragmentArgs by navArgs()
 
-    private lateinit var editTextTitle: TextInputEditText
-    private lateinit var editTextContent: TextInputEditText
-    private lateinit var buttonSave: MaterialButton
-    private lateinit var buttonCamera: MaterialButton
-    private lateinit var imageViewNote: ImageView
+    private var editTextTitle: TextInputEditText? = null
+    private var editTextContent: TextInputEditText? = null
+    private var buttonSave: MaterialButton? = null
+    private var buttonCamera: MaterialButton? = null
+    private var imageViewNote: ImageView? = null
 
     private var currentNote: Note? = null
     private var currentPhotoPath: String? = null
@@ -96,15 +96,15 @@ class NoteEditFragment : Fragment() {
             loadNote()
         }
 
-        buttonSave.setOnClickListener {
+        buttonSave?.setOnClickListener {
             saveNote()
         }
 
-        buttonCamera.setOnClickListener {
+        buttonCamera?.setOnClickListener {
             checkCameraPermissionAndLaunch()
         }
 
-        imageViewNote.setOnClickListener {
+        imageViewNote?.setOnClickListener {
             currentPhotoPath?.let { path ->
                 showFullImageDialog(path)
             }
@@ -122,8 +122,8 @@ class NoteEditFragment : Fragment() {
                         if (!hasLoadedNote) {
                             hasLoadedNote = true
                             currentNote = it
-                            editTextTitle.setText(it.title)
-                            editTextContent.setText(it.content)
+                            editTextTitle?.setText(it.title)
+                            editTextContent?.setText(it.content)
                             it.imagePath?.let { path ->
                                 currentPhotoPath = path
                                 displayImage(path)
@@ -182,8 +182,8 @@ class NoteEditFragment : Fragment() {
         if (file.exists()) {
             // Use BitmapFactory to avoid caching issues when updating photo
             val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-            imageViewNote.setImageBitmap(bitmap)
-            imageViewNote.visibility = View.VISIBLE
+            imageViewNote?.setImageBitmap(bitmap)
+            imageViewNote?.visibility = View.VISIBLE
         }
     }
 
@@ -214,8 +214,8 @@ class NoteEditFragment : Fragment() {
     }
 
     private fun saveNote() {
-        val title = editTextTitle.text.toString().trim()
-        val content = editTextContent.text.toString().trim()
+        val title = editTextTitle?.text?.toString()?.trim() ?: ""
+        val content = editTextContent?.text?.toString()?.trim() ?: ""
 
         if (title.isEmpty() && content.isEmpty()) {
             Toast.makeText(requireContext(), "Note cannot be empty", Toast.LENGTH_SHORT).show()
@@ -243,5 +243,11 @@ class NoteEditFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.clearSelectedNote()
+        // Clear view references to prevent memory leaks
+        editTextTitle = null
+        editTextContent = null
+        buttonSave = null
+        buttonCamera = null
+        imageViewNote = null
     }
 }
