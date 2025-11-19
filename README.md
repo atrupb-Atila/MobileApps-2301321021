@@ -83,6 +83,15 @@ Notes Journal е приложение за водене на бележки. П�
 2. Инсталирай на устройство
 3. Стартирай приложението
 
+## Скрийншотове
+
+![Empty State](screenshots/empty%20state%20message.png)
+![With Note](screenshots/with%20a%20note.png)
+![Edit Screen](screenshots/edit%20screen.png)
+![Note with Camera](screenshots/note%20with%20camera.png)
+![Delete Dialog](screenshots/delete%20dialog.png)
+![Full Photo View](screenshots/full%20photo%20view.png)
+
 ## APK
 
 [Свали APK](apk/app-release.apk)
