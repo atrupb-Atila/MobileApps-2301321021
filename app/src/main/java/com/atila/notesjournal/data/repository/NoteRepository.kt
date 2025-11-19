@@ -3,11 +3,8 @@ package com.atila.notesjournal.data.repository
 import com.atila.notesjournal.data.dao.NoteDao
 import com.atila.notesjournal.data.model.Note
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class NoteRepository @Inject constructor(
+class NoteRepository(
     private val noteDao: NoteDao
 ) {
 

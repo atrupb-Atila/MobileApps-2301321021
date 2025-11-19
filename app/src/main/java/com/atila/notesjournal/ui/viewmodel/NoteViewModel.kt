@@ -1,18 +1,16 @@
 package com.atila.notesjournal.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.atila.notesjournal.data.model.Note
 import com.atila.notesjournal.data.repository.NoteRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NoteViewModel @Inject constructor(
+class NoteViewModel(
     private val repository: NoteRepository
 ) : ViewModel() {
 
@@ -52,5 +50,15 @@ class NoteViewModel @Inject constructor(
 
     fun clearSelectedNote() {
         _selectedNote.value = null
+    }
+
+    class Factory(private val repository: NoteRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(NoteViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return NoteViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 }
